@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "axios": "^1.7.2",
+    "twitter-api-v2": "^1.17.1"
+  }
+}
