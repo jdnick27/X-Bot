@@ -12,7 +12,7 @@ app.listen(port, () => {
 });
 
 const tweet = async () => {
-    const cardId = 'xy10-1'; // Example card ID
+    const cardId = 'ex10-1'; // Example card ID
     const card = await fetchCardById(cardId);
     const cardName = card.name;
     const imageURL = card.images.large;
