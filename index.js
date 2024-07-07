@@ -16,7 +16,7 @@ const tweet = async () => {
     const card = await fetchCardById(cardId);
     const cardName = card.name;
     const imageURL = card.images.large;
-    const filename = `${cardName}.png`;
+    const filename = `images/${cardName}.png`;
 
     download(imageURL, filename, async function () {
         try {
