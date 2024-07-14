@@ -13,13 +13,13 @@ app.listen(port, () => {
 });
 
 // Function to create and send a tweet
-const tweet = async () => { 
+const tweet = async () => {
     // Fetch the card details by ID
     const card = await fetchCardById();
     const cardName = card.name;
     const imageURL = card.images.large;
     const filename = `images/${cardName}.png`;
-    
+
     // Determine the card type
     let cardType = '';
     if (card.types.length > 1) {
