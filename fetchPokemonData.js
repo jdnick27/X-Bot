@@ -1,8 +1,16 @@
 const { findCardByID, Card } = require('pokemon-tcg-sdk-typescript/dist/sdk');
+const { readFileToArray, getRandomInt } = require("./utilities");
 const axios = require('axios');
 
 // Function to fetch a Pokémon card by its ID
-const fetchCardById = async (cardId) => {
+const fetchCardById = async () => {
+  const setsfilePath = './pokemon_card_sets.txt';
+
+  // Read the list of Pokémon card sets from the file
+  const linesArray = readFileToArray(setsfilePath);
+
+  // Generate a random card ID using the set and a random number
+  const cardId = `${linesArray[await getRandomInt(0, 99)]}-${await getRandomInt(1, 99)}`;
   try {
     // Use the SDK to find the card by its ID
     const card = await findCardByID(cardId);
@@ -11,7 +19,7 @@ const fetchCardById = async (cardId) => {
   } catch (error) {
     // Log any error encountered during the fetch
     console.error('Error fetching card:', error);
-    throw error;
+    await fetchCardById();
   }
 };
 

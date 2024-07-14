@@ -13,17 +13,9 @@ app.listen(port, () => {
 });
 
 // Function to create and send a tweet
-const tweet = async () => {
-    const setsfilePath = './pokemon_card_sets.txt';
-    
-    // Read the list of Pokémon card sets from the file
-    const linesArray = readFileToArray(setsfilePath);
-    
-    // Generate a random card ID using the set and a random number
-    const cardId = `${linesArray[await getRandomInt(0, 99)]}-${await getRandomInt(1, 5)}`;
-    
+const tweet = async () => { 
     // Fetch the card details by ID
-    const card = await fetchCardById(cardId);
+    const card = await fetchCardById();
     const cardName = card.name;
     const imageURL = card.images.large;
     const filename = `images/${cardName}.png`;
@@ -47,7 +39,7 @@ const tweet = async () => {
 
             // Compile and send the tweet
             await twitterClient.v2.tweet({
-                text: `Daily #Pokemon Cards\n\n${card.name}\nType: ${cardType}\nSeries: ${card.set.series}\nRelease Date: ${card.set.releaseDate}\nTrend Price: $${card.cardmarket.prices.trendPrice}`,
+                text: `Daily #Pokemon Cards\n\n${card.name}\nType: ${cardType}\nSeries: ${card.set.series}\nRarity: ${card.rarity}\nArtist: ${card.artist}\nRelease Date: ${card.set.releaseDate}\nTrend Price: $${card.cardmarket.prices.trendPrice}\nLink to TCG: ${card.tcgplayer.url}`,
                 media: {
                     media_ids: [mediaId]
                 }
@@ -58,15 +50,16 @@ const tweet = async () => {
     });
 };
 
-// Schedule the tweet function to run every 6 hours
-const cronTweet = new CronJob("0 */6 * * *", async () => {
-    tweet();
+// Schedule the tweet function to run at specific times
+const cronTimes = ['0 0 * * *', '0 4 * * *', '0 8 * * *', '0 12 * * *', '0 16 * * *', '0 20 * * *'];
+const timeZones = 'America/Chicago';
+
+cronTimes.forEach(time => {
+    const job = new CronJob(time, tweet, null, true, timeZones);
+    job.start();
 });
 
-// Schedule the tweet function to run every 30 seconds, USED FOR TESTING
-// const cronTweet = new CronJob("*/30 * * * * *", async () => {
-//     tweet();
-// });
+// Schedule the tweet function to run every 30 seconds for testing
+const cronTweetTEST = new CronJob("*/30 * * * * *", tweet);
 
-// Start the cron job
-cronTweet.start();
+// cronTweetTEST.start();
