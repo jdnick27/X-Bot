@@ -22,13 +22,19 @@ const tweet = async () => {
 
     // Determine the card type
     let cardType = '';
-    if (card.types.length > 1) {
-        cardType = card.types[0];
-        for (let i = 1; i < card.types.length; i++) {
-            cardType += ', ' + card.types[i];
+
+    if (card.types && card.types.length > 0) {
+        if (card.types.length > 1) {
+            cardType = card.types[0];
+            for (let i = 1; i < card.types.length; i++) {
+                cardType += ', ' + card.types[i];
+            }
+        } else {
+            cardType = card.types[0];
         }
     } else {
-        cardType = card.types[0];
+        // Handle cases where card.types is undefined or empty
+        cardType = 'N/A';
     }
 
     // Download the card image
