@@ -3,7 +3,9 @@ const { readFileToArray, getRandomInt } = require("./utilities");
 const axios = require('axios');
 
 // Function to fetch a Pokémon card by its ID
-const fetchCardById = async () => {
+const fetchCardById = async (retryCount = 0) => {
+  console.log(`Attempt to fetch card, retry count: ${retryCount}`);
+
   const setsfilePath = './pokemon_card_sets.txt';
 
   // Read the list of Pokémon card sets from the file
@@ -11,17 +13,28 @@ const fetchCardById = async () => {
 
   // Generate a random card ID using the set and a random number
   const cardId = `${linesArray[await getRandomInt(0, 99)]}-${await getRandomInt(1, 99)}`;
+  console.log(`Generated card ID: ${cardId}`);
+
   try {
     // Use the SDK to find the card by its ID
     const card = await findCardByID(cardId);
-    console.log('Card:', card);
+    console.log('Fetched card:', card);
     return card;
   } catch (error) {
     // Log any error encountered during the fetch
     console.error('Error fetching card:', error);
-    await fetchCardById();
+
+    // Retry only once if the retryCount is less than 1
+    if (retryCount < 1) {
+      console.log('Retrying fetch card...');
+      return await fetchCardById(retryCount + 1);
+    } else {
+      // Handle the error appropriately if retry fails
+      throw new Error("Failed to fetch card after retry");
+    }
   }
 };
+
 
 // Function to find Pokémon cards by their Pokédex number
 const findCardsByPokedexNumber = async (pokedexNumber) => {
