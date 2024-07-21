@@ -64,12 +64,12 @@ const tweet = async () => {
 const cronTimes = ['0 0 * * *', '0 4 * * *', '0 8 * * *', '0 12 * * *', '0 16 * * *', '0 20 * * *'];
 const timeZones = 'America/Chicago';
 
-// cronTimes.forEach(time => {
-//     const job = new CronJob(time, tweet, null, true, timeZones);
-//     job.start();
-// });
+cronTimes.forEach(time => {
+    const job = new CronJob(time, tweet, null, true, timeZones);
+    job.start();
+});
 
 // Schedule the tweet function to run every 30 seconds for testing
 const cronTweetTEST = new CronJob("*/30 * * * * *", tweet);
 
-cronTweetTEST.start();
+// cronTweetTEST.start();
