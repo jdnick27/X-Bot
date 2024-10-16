@@ -11,11 +11,24 @@ const fetchCardById = async (retryCount = 0) => {
   // Read the list of Pokémon card sets from the file
   const linesArray = readFileToArray(setsfilePath);
 
-  // Generate a random card ID using the set and a random number
-  const cardId = `${linesArray[await getRandomInt(0, 99)]}-${await getRandomInt(1, 99)}`;
-  console.log(`Generated card ID: ${cardId}`);
+  // Select a random set ID from the list
+  const setId = linesArray[await getRandomInt(0, linesArray.length - 1)];
+  console.log(`Selected set ID: ${setId}`);
 
   try {
+    // Call the Pokémon TCG API to get the card count for the selected set
+    const response = await axios.get(`https://api.pokemontcg.io/v2/sets/${setId}`);
+    const cardCount = response.data.data.total;
+    console.log(`Fetched card count for set ${setId}: ${cardCount}`);
+
+    // Generate a random card number based on the fetched card count
+    const cardNumber = await getRandomInt(1, cardCount);
+    console.log(`Generated card number: ${cardNumber}`);
+
+    // Generate the card ID using the set ID and the random card number
+    const cardId = `${setId}-${cardNumber}`;
+    console.log(`Generated card ID: ${cardId}`);
+
     // Use the SDK to find the card by its ID
     const card = await findCardByID(cardId);
     console.log('Fetched card:', card);
